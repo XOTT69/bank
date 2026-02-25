@@ -7,133 +7,107 @@ function money(n) {
   return `${sign}${abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ₴`
 }
 
-function Screen({ title, color, children }) {
+function Phone({ children }) {
   return (
-    <div className="screen">
-      <div className="header" style={{ background: color }}>
-        <div className="headerTitle">{title}</div>
+    <div className="stage">
+      <div className="phoneShell">
+        <div className="phoneInner">{children}</div>
       </div>
-      <div className="content">{children}</div>
+    </div>
+  )
+}
+
+function HeaderBlueCards() {
+  return (
+    <div className="screenWrap">
+      <div className="topBlue">
+        <div className="amountBig">{money(mock.cards.balance)}</div>
+        <div className="amountSub">
+          Використано • {money(mock.cards.used)} з {money(mock.cards.limit)}
+        </div>
+      </div>
+
+      <div className="bodyPad">
+        <div className="card">
+          <div className="cardTitle">Операції</div>
+
+          <div className="list">
+            {mock.cards.ops.map((o, i) => (
+              <div className="listRow" key={i}>
+                <div className="iconBox red" />
+                <div className="rowMain">
+                  <div className="rowTitle">{o.title}</div>
+                </div>
+                <div className="rowAmount">{money(o.amount)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="homeIndicator" />
+    </div>
+  )
+}
+
+function ScreenMore() {
+  return (
+    <div className="screenWrap">
+      <div className="topLight">
+        <div className="titleGhost">Ще</div>
+      </div>
+
+      <div className="bodyPad moreLift">
+        <div className="card">
+          <div className="list">
+            {mock.more.map((m, i) => (
+              <div className="listRow" key={i}>
+                <div className="iconBox blue" />
+                <div className="rowMain">
+                  <div className="rowTitle">{m.title}</div>
+                  <div className="rowSubtitle">{m.subtitle}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="homeIndicator" />
+    </div>
+  )
+}
+
+function Tabbar({ tab, setTab }) {
+  const items = [
+    { key: 'cards', label: 'Картки' },
+    { key: 'more', label: 'Ще' },
+  ]
+  return (
+    <div className="tabbar">
+      {items.map((it) => (
+        <button
+          key={it.key}
+          className={`tabBtn ${tab === it.key ? 'active' : ''}`}
+          onClick={() => setTab(it.key)}
+          type="button"
+        >
+          {it.label}
+        </button>
+      ))}
     </div>
   )
 }
 
 export default function App() {
-  const [tab, setTab] = React.useState('Картки')
+  const [tab, setTab] = React.useState('cards')
 
   return (
-    <div className="app">
-      <div className="phone">
-        {tab === 'Картки' && (
-          <Screen title="" color="linear-gradient(180deg, #1f3b8f 0%, #1b2f73 100%)">
-            <div className="bigNumber">{money(mock.cards.balance)}</div>
-            <div className="subText">Використано • {money(mock.cards.used)} з {money(mock.cards.limit)}</div>
-
-            <div className="card3d">
-              <div className="cardBrand">monobank</div>
-              <div className="cardDigits">{mock.cards.cardMasked}</div>
-              <div className="cardType">VISA</div>
-            </div>
-
-            <div className="block">
-              <div className="blockTitle">Операції</div>
-              {mock.cards.ops.map((o, i) => (
-                <div className="row" key={i}>
-                  <div className="rowLeft">
-                    <div className="dot red" />
-                    <div className="rowTitle">{o.title}</div>
-                  </div>
-                  <div className="rowAmount">{money(o.amount)}</div>
-                </div>
-              ))}
-            </div>
-          </Screen>
-        )}
-
-        {tab === 'Кредити' && (
-          <Screen title="Доступний ліміт" color="linear-gradient(180deg, #1aa05c 0%, #137a46 100%)">
-            <div className="bigNumber">{money(mock.installments.available)}</div>
-            <div className="block">
-              <div className="blockTitle">Покупка Частинами</div>
-              {mock.installments.items.map((it, i) => (
-                <div className="row tall" key={i}>
-                  <div className="rowLeft">
-                    <div className="dot purple" />
-                    <div>
-                      <div className="rowTitle">{it.title}</div>
-                      <div className="rowSub">Платіж {it.nextPay} на {money(it.nextAmount)}</div>
-                    </div>
-                  </div>
-                  <div className="rowAmount">{money(it.total)}</div>
-                </div>
-              ))}
-            </div>
-          </Screen>
-        )}
-
-        {tab === 'Накопичення' && (
-          <Screen title="Накопичення в гривнях" color="linear-gradient(180deg, #1b6ad3 0%, #1558b0 100%)">
-            <div className="bigNumber">{money(mock.savings.total)}</div>
-            <div className="block">
-              <div className="blockTitle">Банки</div>
-              {mock.savings.jars.map((j, i) => (
-                <div className="row tall" key={i}>
-                  <div className="rowLeft">
-                    <div className="dot pink" />
-                    <div>
-                      <div className="rowTitle">{j.title}</div>
-                      <div className="rowSub">Накопичено {money(j.saved)}</div>
-                    </div>
-                  </div>
-                  <div className="rowAmount">{money(j.goal)}</div>
-                </div>
-              ))}
-            </div>
-          </Screen>
-        )}
-
-        {tab === 'Ще' && (
-          <Screen title="Ще" color="linear-gradient(180deg, #f2f2f2 0%, #f2f2f2 100%)">
-            <div className="block">
-              {mock.more.map((m, i) => (
-                <div className="row tall" key={i}>
-                  <div className="rowLeft">
-                    <div className="dot blue" />
-                    <div>
-                      <div className="rowTitle">{m.title}</div>
-                      <div className="rowSub">{m.subtitle}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Screen>
-        )}
-
-        {tab === 'Маркет' && (
-          <Screen title="Маркет" color="linear-gradient(180deg, #f2f2f2 0%, #f2f2f2 100%)">
-            <div className="block">
-              <div className="blockTitle">Скоро буде</div>
-              <div className="row">
-                <div className="rowTitle">Тут можна додати вітрину товарів (моково).</div>
-              </div>
-            </div>
-          </Screen>
-        )}
-
-        <div className="tabbar">
-          {mock.tabs.map((t) => (
-            <button
-              key={t}
-              className={`tab ${t === tab ? 'active' : ''}`}
-              onClick={() => setTab(t)}
-              type="button"
-            >
-              {t}
-            </button>
-          ))}
-        </div>
+    <Phone>
+      <div className="appRoot">
+        {tab === 'cards' ? <HeaderBlueCards /> : <ScreenMore />}
+        <Tabbar tab={tab} setTab={setTab} />
       </div>
-    </div>
+    </Phone>
   )
 }
